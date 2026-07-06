@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset='utf-8'>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>İstanbul Fetih İlim Kültür ve Yardımlaşma Derneği</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: #ffffff;
+      color: #1c1c1e;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body.loading {
+      overflow: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    #yat-splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #0a0a0c;
+      z-index: 999999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), visibility 0.6s;
+    }
+
+    .animated-text-container { text-align: center; letter-spacing: 4px; }
+    .yat-title {
+      color: #ffffff; font-size: 3rem; font-weight: 800; margin-bottom: 10px; text-transform: uppercase;
+      opacity: 0; transform: translateY(30px); animation: fadeInUpFadeOut 3.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+    .yat-subtitle {
+      color: #00bcd4; font-size: 1.1rem; font-weight: 400; letter-spacing: 8px; text-transform: uppercase;
+      opacity: 0; transform: translateY(20px); animation: fadeInUpFadeOut 3.5s cubic-bezier(0.25, 1, 0.5, 1) 0.3s forwards;
+    }
+    .yat-line {
+      width: 0; height: 2px; background: linear-gradient(90deg, transparent, #00bcd4, transparent); margin: 15px auto;
+      animation: expandLine 2s ease-in-out 0.5s forwards;
+    }
+    #yat-splash-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    @keyframes fadeInUpFadeOut {
+      0% { opacity: 0; transform: translateY(30px); filter: blur(5px); }
+      20%, 80% { opacity: 1; transform: translateY(0); filter: blur(0); }
+      100% { opacity: 0; transform: translateY(-20px); filter: blur(5px); }
+    }
+    @keyframes expandLine { 0% { width: 0; opacity: 0; } 50%, 80% { width: 150px; opacity: 1; } 100% { width: 0; opacity: 0; } }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #main-site-content {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.6s ease;
+    }
+
+    body.ready #main-site-content {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    header {
+      padding: 30px 0;
+      background: #ffffff;
+      border-bottom: 1px solid #f4f4f5;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header .header-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-area {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-main {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #111111;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      font-size: 0.85rem;
+      color: #71717a;
+      margin-top: 2px;
+      font-weight: 500;
+    }
+
+    .menu-burger {
+      width: 28px;
+      height: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .menu-burger span {
+      width: 100%;
+      height: 2px;
+      background-color: #111111;
+      transition: 0.3s;
+    }
+
+    .hero {
+      padding: 80px 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hero-text h2 {
+      font-size: 3.2rem;
+      line-height: 1.15;
+      font-weight: 800;
+      color: #111111;
+      margin-bottom: 16px;
+    }
+
+    .hero-text p {
+      font-size: 1.15rem;
+      color: #71717a;
+      margin-bottom: 30px;
+    }
+
+    .btn-bagis {
+      display: inline-block;
+      background: #111111;
+      color: #ffffff;
+      padding: 14px 36px;
+      border-radius: 50px;
+      border: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .btn-bagis:hover {
+      background: #27272a;
+      transform: translateY(-2px);
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+    }
+
+    .sofra-banner {
+      padding: 60px 0;
+      background: #111111;
+      color: #ffffff;
+    }
+
+    .sofra-slider-container {
+      position: relative;
+      max-width: 1000px;
+      margin: 0 auto;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .sofra-slides {
+      position: relative;
+      height: 500px;
+      width: 100%;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.6s ease-in-out, visibility 0.6s;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .slide-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 40px;
+      background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      height: 45%;
+    }
+
+    .slide-overlay h3 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      margin-bottom: 15px;
+    }
+
+    .btn-slider-action {
+      align-self: flex-start;
+      display: inline-block;
+      border: 1px solid #ffffff;
+      color: #ffffff;
+      padding: 10px 28px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-slider-action:hover {
+      background: #ffffff;
+      color: #111111;
+    }
+
+    .slider-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .slider-arrow:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .arrow-left { left: 20px; }
+    .arrow-right { right: 20px; }
+
+    .image-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s;
+    }
+
+    .image-modal.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content-wrapper {
+      position: relative;
+      max-width: 90%;
+      max-height: 85%;
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      transform: scale(0.9);
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .image-modal.open .modal-content-wrapper {
+      transform: scale(1);
+    }
+
+    .modal-content-wrapper img {
+      max-width: 100%;
+      max-height: 75vh;
+      display: block;
+      border-radius: 4px;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: -45px;
+      right: -5px;
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 2rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .sofra-slides { height: 380px; }
+      .slide-overlay h3 { font-size: 1.4rem; }
+      .slider-arrow { width: 40px; height: 40px; font-size: 1.2rem; }
+    }
+
+    .hakkimizda {
+      padding: 100px 0;
+      background-color: #388e3c;
+      color: #ffffff;
+    }
+
+    .hakkimizda-grid {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .hakkimizda-logo-box {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.2);
+      text-align: center;
+    }
+
+    .hakkimizda-logo-box h3 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .hakkimizda-paragraphs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      opacity: 0.95;
+    }
+
+    .contact-footer {
+      padding: 100px 0 60px 0;
+      background: #fafafa;
+      border-top: 1px solid #f4f4f5;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 80px;
+      margin-bottom: 60px;
+    }
+
+    .contact-info h2 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      margin-bottom: 30px;
+      color: #111111;
+    }
+
+    .info-item {
+      margin-bottom: 20px;
+    }
+
+    .info-item label {
+      display: block;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: #a1a1aa;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .info-item p {
+      font-size: 1.1rem;
+      color: #27272a;
+      font-weight: 500;
+    }
+
+    .footer-branding {
+      border-left: 1px solid #e4e4e7;
+      padding-left: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .footer-branding p {
+      font-size: 0.95rem;
+      color: #71717a;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .footer-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-footer {
+      flex: 1;
+      text-align: center;
+      padding: 12px 20px;
+      background: #111111;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: background 0.2s;
+    }
+
+    .btn-footer:hover {
+      background: #27272a;
+    }
+
+    @media (max-width: 992px) {
+      .hero { grid-template-columns: 1fr; gap: 40px; text-align: center; }
+      .hero-text h2 { font-size: 2.4rem; }
+      .hakkimizda-grid { grid-template-columns: 1fr; gap: 40px; }
+      .hakkimizda-paragraphs { grid-template-columns: 1fr; gap: 20px; }
+      .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+      .footer-branding { border-left: none; padding-left: 0; }
+    }
+  </style>
+</head>
+<body class="loading">
+
+  <div id="yat-splash-screen">
+    <div class="animated-text-container">
+      <h1 class="yat-title">YAT YAZILIM</h1>
+      <div class="yat-line"></div>
+      <p class="yat-subtitle">Sunar</p>
+    </div>
+  </div>
+
+  <div id="main-site-content">
+
+    <header>
+      <div class="container header-grid">
+        <div class="brand-area">
+          <span class="brand-main">Ana Menü</span>
+          <span class="brand-sub">İstanbul Fetih İlim Kültür ve Yardımlaşma Derneği</span>
+        </div>
+        <div class="menu-burger">
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </header>
+
+    <section class="container hero reveal">
+      <div class="hero-text">
+        <h2>Keşfedin, Bilgiye Yolculuk Başlasın</h2>
+        <p>Burası FETİH İLİM DERNEĞİ</p>
+        <button class="btn-bagis trigger-modal">BAĞIŞ</button>
+      </div>
+      <div class="hero-image">
+        <img src="https://static.wixstatic.com/media/3e08bf_6636c84292ba480193f5b4cb08ee74c6~mv2.jpg" alt="Fetih İlim">
+      </div>
+    </section>
+
+    <section class="sofra-banner reveal">
+      <div class="container">
+        <div class="sofra-slider-container">
+          
+          <button class="slider-arrow arrow-left" id="prevSlide">&#10094;</button>
+          <button class="slider-arrow arrow-right" id="nextSlide">&#10095;</button>
+
+          <div class="sofra-slides">
+            
+            <div class="slide active" style="background-image: url('https://static.wixstatic.com/media/3e08bf_2c391e66c59a404dbc8b7b5e4b08ec24~mv2.jpeg/v1/fill/w_739,h_377,al_c,q_80,enc_avif,quality_auto/3e08bf_2c391e66c59a404dbc8b7b5e4b08ec24~mv2.jpeg');">
+              <div class="slide-overlay">
+                <h3>Böyle Sofralara vesile olmak için</h3>
+                <button class="btn-slider-action trigger-modal">Tıkla</button>
+              </div>
+            </div>
+
+            <div class="slide" style="background-image: url('https://static.wixstatic.com/media/3e08bf_c4f740969cd342a4b8fbca873d1e42d1~mv2.jpeg/v1/fill/w_980,h_500,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/3e08bf_c4f740969cd342a4b8fbca873d1e42d1~mv2.jpeg');">
+              <div class="slide-overlay">
+                <h3>İlim ve Kültür Faaliyetlerimiz</h3>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <div class="image-modal" id="sofraModal">
+      <div class="modal-content-wrapper">
+        <button class="modal-close-btn" id="closeSofraModal">&times;</button>
+        <img src="https://static.wixstatic.com/media/3e08bf_31b9d52e9deb464c90086fc138a95391~mv2.png/v1/fill/w_980,h_490,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/Ekran%20g%C3%B6r%C3%BCnt%C3%BCs%C3%BC%202025-09-06%20164243.png" alt="Bağış ve Hesap Detayları">
+      </div>
+    </div>
+
+    <section class="hakkimizda reveal">
+      <div class="container hakkimizda-grid">
+        <div class="hakkimizda-logo-box">
+          <h3>Hakkımızda</h3>
+          <p style="font-size: 0.85rem; opacity: 0.8;">KÜLTÜR VE YARDIMLAŞMA DERNEĞİ</p>
+        </div>
+        <div class="hakkimizda-text">
+          <div class="hakkimizda-paragraphs">
+            <p>Fetih İlim Derneği, İstanbul merkezli eğitim hizmetleri sunan bir kuruluştur. Yaz Kur'an kursları, ilim sohbetleri ve medreseler gibi hizmetlerimizle bilgiye ulaşmanın yanı sıra hayırsever bağışlarınızı iletebileceğiniz bir platform sunar.</p>
+            <p>Amacımız, topluma değerli bilgiler sunarak insanların manevi ve ilmi gelişimlerine katkıda bulunmaktır. Öncelikli hedefimiz, eğitim ve hayırsever faaliyetlerimizi desteklemek için bağışları artırmaktır.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-footer reveal">
+      <div class="container contact-grid">
+        
+        <div class="contact-info">
+          <h2>İletişimde Kalın, Bilgiyi Paylaşın</h2>
+          
+          <div class="info-item">
+            <label>İletişim</label>
+            <p>Bize Ulaşın</p>
+          </div>
+          
+          <div class="info-item">
+            <label>Telefon</label>
+            <p>(+90) 537 563 41 59</p>
+          </div>
+
+          <div class="info-item">
+            <label>Dernek Başkanı</label>
+            <p>Özgür Aydın</p>
+          </div>
+
+          <div class="info-item">
+            <label>Adres</label>
+            <p>Mehmet Akif Ersoy mahallesi 2070 sokak no 46 Esenyurt</p>
+          </div>
+        </div>
+
+        <div class="footer-branding">
+          <p>Bu sitenin tasarımı <strong>YAT YAZILIM ŞİRKETİ</strong> tarafından yapılmıştır. Detaylı bilgi için aşağıdaki linke tıklayın.</p>
+          <div class="footer-buttons">
+            <a href="https://yat1301.wixsite.com/yat-yaz1" target="_blank" class="btn-footer">Web Sitemiz</a>
+            <a href="#website-instagram" class="btn-footer">İnstagram</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    (function() {
+      const ANIMATION_DURATION = 3800; 
+
+      window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+          const splash = document.getElementById('yat-splash-screen');
+          if (splash) {
+            splash.classList.add('fade-out');
+            document.body.classList.remove('loading');
+            document.body.classList.add('ready');
+            
+            triggerScrollReveal();
+            initSlider(); 
+            initModal();  
+            
+            setTimeout(function() { splash.remove(); }, 600);
+          }
+        }, ANIMATION_DURATION);
+      });
+
+      function triggerScrollReveal() {
+        const reveals = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('active');
+              observer.unobserve(entry.target); 
+            }
+          });
+        }, {
+          threshold: 0.15,
+          rootMargin: "0px 0px -50px 0px"
+        });
+
+        reveals.forEach(reveal => { revealObserver.observe(reveal); });
+      }
+
+      function initSlider() {
+        const slides = document.querySelectorAll('.slide');
+        const nextBtn = document.getElementById('nextSlide');
+        const prevBtn = document.getElementById('prevSlide');
+        let currentIdx = 0;
+
+        function showSlide(index) {
+          slides.forEach(slide => slide.classList.remove('active'));
+          
+          if (index >= slides.length) currentIdx = 0;
+          else if (index < 0) currentIdx = slides.length - 1;
+          else currentIdx = index;
+
+          slides[currentIdx].classList.add('active');
+        }
+
+        nextBtn.addEventListener('click', function() {
+          showSlide(currentIdx + 1);
+        });
+
+        prevBtn.addEventListener('click', function() {
+          showSlide(currentIdx - 1);
+        });
+      }
+
+      function initModal() {
+        const modal = document.getElementById('sofraModal');
+        const openButtons = document.querySelectorAll('.trigger-modal'); 
+        const closeBtn = document.getElementById('closeSofraModal');
+
+        if(modal && closeBtn) {
+          openButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+              modal.classList.add('open');
+              document.body.style.overflow = 'hidden'; 
+            });
+          });
+
+          closeBtn.addEventListener('click', function() {
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+          });
+
+          modal.addEventListener('click', function(e) {
+            if(e.target === modal) {
+              modal.classList.remove('open');
+              document.body.style.overflow = '';
+            }
+          });
+        }
+      }
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+/* Giriş Ekranı Kapanış Klası */
+#yat-splash-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Splash bittiğinde ana sitenin görünmesini garanti et */
+body:not(.loading) #site-root {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+}
